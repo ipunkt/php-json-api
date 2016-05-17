@@ -46,21 +46,31 @@ class Resource extends AbstractElement
      */
     protected $included = array();
 
-    /**
-     * Create a new resource instance.
-     *
-     * @param string $type
-     * @param int $id
-     * @param array $attributes
-     * @param array $links
-     * @param array $included
-     */
-    public function __construct($type, $id, $attributes = array(), $links = array(), $included = array())
+	/**
+	 * @var string[]
+	 */
+	private $apiLinks = array();
+
+	/**
+	 * Create a new resource instance.
+	 *
+	 * @param string $type
+	 * @param int $id
+	 * @param array $attributes
+	 * @param array $links
+	 * @param array $included
+	 * @param null $apiLinks
+	 */
+    public function __construct($type, $id, $attributes = array(), $links = array(), $included = array(), $apiLinks = null)
     {
+	    if($apiLinks === null)
+		    $apiLinks = array();
+	    
         $this->type = $type;
         $this->attributes = $attributes;
         $this->links = $links;
         $this->included = $included;
+	    $this->apiLinks = $apiLinks;
 
         $this->setId($id);
     }
@@ -211,6 +221,9 @@ class Resource extends AbstractElement
     public function toArray($full = true)
     {
         $array = array('type' => $this->type, 'id' => $this->id);
+	    
+	    if( !empty($this->apiLinks) )
+		    $array['links'] = $this->apiLinks;
 
         if ($full) {
             $array['attributes'] = (array) $this->attributes;
@@ -226,7 +239,20 @@ class Resource extends AbstractElement
                 }
             }
         }
+	    
+	    $links = $this->getApiLinks();
+	    if(! empty($links))
+			$array['links'] = $links;
 
         return $array;
     }
+
+	/**
+	 * Returns an array of links which are displayed for the resource
+	 * 
+	 * @return array
+	 */
+	public function getApiLinks() {
+		return $this->apiLinks;
+	}
 }
