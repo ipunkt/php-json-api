@@ -171,7 +171,7 @@ abstract class AbstractSerializer implements SerializerInterface
 
 	    $apiLinks = $this->getApiLinks($data);
 
-        return new Resource($this->type, $this->getId($data), $this->getAttributes($data), $links, $included, $apiLinks);
+        return new Resource($this->getType($data), $this->getId($data), $this->getAttributes($data), $links, $included, $apiLinks);
     }
 
     /**
@@ -229,5 +229,13 @@ abstract class AbstractSerializer implements SerializerInterface
 	 */
 	protected function getApiLinks($model) {
 		return array();
+	}
+
+	/**
+	 * @param $data
+	 * @return string
+	 */
+	protected function getType($data) {
+		return $this->type;
 	}
 }
